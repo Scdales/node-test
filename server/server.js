@@ -59,12 +59,13 @@ app.delete('/todos/:id', (req, res) => {
     if (!ObjectID.isValid(id)) {
         return res.status(404).send();
     }
-    Todo.findByIdAndRemove(id).then((result) => {
-        if (!result) {
+    Todo.findByIdAndRemove(id).then((todo) => {
+        if (!todo) {
             return res.status(404).send();
         }
-        res.status(200).send(result);
-    }).catch((e) => res.status(400).send());
+        res.status(200).send({todo});
+    }).catch((e) => 
+        res.status(400).send());
 });
 
 app.listen(port, () => {
