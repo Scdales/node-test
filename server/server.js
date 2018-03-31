@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 //Local objects
 var {mongoose} = require('./db/mongoose')
@@ -27,6 +28,28 @@ app.get('/todos', (req,res) => {
         res.send({todos});
     }, (e) => {
         res.status(400).send(e);
+    });
+});
+
+// GET /todos/123456
+// :id created id variable and can be fetched with req.params.id
+app.get('/todos/:id', (req, res) => {
+    var id = req.params.id;
+    //res.send(req.params);
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+    Todo.findById(id).then((todo) => {
+        if (!todo) {
+            return res.status(404).send();
+        }
+        
+        res.send({todo});
+        
+    }).catch((e) => {
+        console.log("Error");
+        res.status(400).send();     
     });
 });
 
