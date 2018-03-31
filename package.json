@@ -16,8 +16,12 @@
     "supertest": "2.0.0"
   },
   "scripts": {
+    "start": "node server/server.js",
     "test": "mocha server/**/*.test.js",
     "test-watch": "nodemon --exec \"npm test\""
+  },
+  "engines": {
+    "node": "8.9.3"
   },
   "repository": {
     "type": "git",
