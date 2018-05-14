@@ -51,6 +51,28 @@ UserSchema.methods.generateAuthToken = function () {
   });
 };
 
+// .statics means model method instead of instance method
+UserSchema.statics.findByToken = function (token) {
+  var User = this; //instance methods get called with individual documents and model methods take the modall
+  var decoded;
+
+  try {
+    decoded = jwt.verify(token, 'abc123');
+  } catch (e) {
+    // return new Promise((resolve, reject) => {
+    //   reject();
+    // });
+    return Promise.reject(); //value inside brackets would be caught by catch (e)
+  }
+
+  return User.findOne({
+    //quotes are required when there is a . in the value
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  });
+};
+
 var User = mongoose.model('User', UserSchema);
 
 module.exports = {User}
