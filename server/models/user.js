@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 var UserSchema = new mongoose.Schema({
     email: {
@@ -52,7 +53,7 @@ UserSchema.methods.generateAuthToken = function () {
 };
 
 // .statics means model method instead of instance method
-UserSchema.statics.findByToken = function (token) {
+UserSchema.statics.findByToken = function (token) { // using function so we can use 'this'
   var User = this; //instance methods get called with individual documents and model methods take the modall
   var decoded;
 
@@ -72,6 +73,26 @@ UserSchema.statics.findByToken = function (token) {
     'tokens.access': 'auth'
   });
 };
+
+UserSchema.pre('save', function (next) { // must provide next and call next inside
+  var user = this;
+
+  if (user.isModified('password')) {
+    // user.password
+
+    // user.password = hash;
+    // next
+
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(user.password, salt, (err, hash) => {
+        user.password = hash;
+        next();
+      });
+    });
+  } else {
+    next();
+  }
+});
 
 var User = mongoose.model('User', UserSchema);
 
