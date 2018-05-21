@@ -73,7 +73,6 @@ app.delete('/todos/:id', (req, res) => {
 });
 
 app.patch('/todos/:id', (req, res) => {
-    console.log(req);
     var id = req.params.id;
     // This creates a subset of the passed object, preventing users from updating anything
     var body = _.pick(req.body, ['text', 'completed']);
