@@ -52,6 +52,16 @@ UserSchema.methods.generateAuthToken = function () {
   });
 };
 
+UserSchema.methods.removeToken = function (token) {
+  var user = this;
+
+  return user.update({
+    $pull: {
+      tokens: {token}
+    }
+  });
+};
+
 // .statics means model method instead of instance method
 UserSchema.statics.findByToken = function (token) { // using function so we can use 'this'
   var User = this; //instance methods get called with individual documents and model methods take the modall
